@@ -4,7 +4,7 @@ const Poll = require("./poll.js");
 const client = new Discord.Client();
 const pollController = new PollController();
 const config = require("./config.json");
-var currentPoll = null;
+var pollList = {};
 
 client.on("ready", () => {
   console.log("I am ready!");
@@ -13,6 +13,9 @@ client.on("ready", () => {
 client.on("message", (message) => {
   if(message.author.bot)
     return;
+
+  const channelId = message.channel.id;
+  var currentPoll = pollList[channelId];
 
   if(!message.content.startsWith(config.prefix)){
     if(currentPoll != null) {
@@ -37,7 +40,10 @@ client.on("message", (message) => {
     case 'poll':
       if(currentPoll == null || currentPoll.showPollHandle == null) {
         message.channel.send("Starting poll...");
-        currentPoll = pollController.startPoll(args, message);
+        currentPoll = pollController.makePoll(args, message);
+        if(currentPoll != null)
+          pollList[channelId] = currentPoll;
+          pollController.startPoll(currentPoll, message);
       } else {
         message.channel.send("Already a poll underway...");
         message.channel.send(pollController.printPollResults(currentPoll));

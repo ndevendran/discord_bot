@@ -15,31 +15,36 @@ class PollController {
     poll.channel.send(results);
   }
 
-  startPoll(questions, message) {
+  makePoll(questions, message) {
     if(questions == null || questions.length < 2) {
       message.channel.send("Usage !poll question1 question2...question(n)");
-      return;
+      return null;
     }
 
-    const pollTime = 60000;
-    const repeatTime = 30000;
     const pollResults = [];
     for(var question in questions) {
       pollResults.push(0);
     }
-
-    var pollMessage = "Current Poll\n";
-    for(var i in questions) {
-      const choice = parseInt(i) + 1;
-      pollMessage += choice + ")" + questions[i]+"\n";
-    }
-    message.channel.send(pollMessage);
 
     const poll = new Poll(
       questions,
       message,
       pollResults
     );
+
+    return poll;
+  }
+
+  startPoll(poll, message) {
+    const pollTime = 60000;
+    const repeatTime = 30000;
+
+    var pollMessage = "Current Poll\n";
+    for(var i in poll.questions) {
+      const choice = parseInt(i) + 1;
+      pollMessage += choice + ")" + poll.questions[i]+"\n";
+    }
+    message.channel.send(pollMessage);
 
     const showPollHandle = setInterval((function() {
         this.printPollResults(poll);
