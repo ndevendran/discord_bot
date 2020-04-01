@@ -1,4 +1,4 @@
-require('poll.js');
+const Poll = require('./poll.js');
 
 class PollController {
   printPollResults(poll) {
@@ -6,7 +6,7 @@ class PollController {
       return;
 
     var results = "Results:\n";
-    for(i in poll.pollResults) {
+    for(var i in poll.pollResults) {
       const choice = parseInt(i) + 1;
       results += choice + ")" + poll.questions[i] + " "
       + poll.pollResults[i]+"\n";
@@ -21,61 +21,61 @@ class PollController {
       return;
     }
 
-    const pollTime = 300000;
+    const pollTime = 60000;
     const repeatTime = 30000;
     const pollResults = [];
-    for(question in questions) {
+    for(var question in questions) {
       pollResults.push(0);
     }
 
     var pollMessage = "Current Poll\n";
-    for(i in questions) {
+    for(var i in questions) {
       const choice = parseInt(i) + 1;
       pollMessage += choice + ")" + questions[i]+"\n";
     }
     message.channel.send(pollMessage);
 
-
-    const showPollHandle = setInterval(function() {
-      message.channel.send(printPollResults()+"\n\n");
-    }, repeatTime);
-
-    poll = new Poll(
+    const poll = new Poll(
       questions,
       message,
-      showPollHandle,
       pollResults
     );
 
-    const endPollHandle = setTimeout(function() {
-      clearInterval(poll.showPoll);
+    const showPollHandle = setInterval((function() {
+        this.printPollResults(poll);
+    }).bind(this), repeatTime);
+
+    const endPollHandle = setTimeout((function() {
+      clearInterval(poll.showPollHandle);
+      poll.showPollHandle = null;
       var winner = null;
       var winnerScore = 0;
-      for( i in poll.pollResults) {
+      for( var i in poll.pollResults) {
         if(poll.pollResults[i] > winnerScore){
           winner = poll.questions[i];
           winnerScore = poll.pollResults[i];
         }
       }
-      message.channel.send("Final Results:\n"
-        + printPollResults() + "\n Winner: " + winner
-        + "with a score of " + winnerScore + "\n"
+      message.channel.send("Final Results:\n");
+      this.printPollResults(poll)
+      message.channel.send("Winner: " + winner
+        + " with a score of " + winnerScore + "\n"
       );
-      poll = null;
-    }, pollTime);
+    }).bind(this), pollTime);
 
+    poll.showPollHandle = showPollHandle;
     poll.endPollHandle = endPollHandle;
 
     return poll;
   }
 
-  function processVote(poll, choice, message) {
+  processVote(poll, choice, message) {
     if(poll.userVotes[message.author.username] == null){
       poll.pollResults[(choice-1)]++;
       poll.userVotes[message.author.username] = choice;
       message.channel.send(message.author.username + " voted for "
         + poll.questions[choice-1]);
-      printPollResults(poll);
+      this.printPollResults(poll);
     } else {
       const previousChoice = poll.userVotes[message.author.username];
       poll.pollResults[(previousChoice-1)]--;
@@ -84,6 +84,9 @@ class PollController {
       message.channel.send(message.author.username
         + " changed their vote to " + poll.questions[choice-1]
       );
-      printPollResults(poll);
+      this.printPollResults(poll);
     }
+  }
 }
+
+module.exports = PollController;

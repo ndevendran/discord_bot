@@ -1,10 +1,8 @@
 class Poll {
-  constructor(questions, message, showPoll, pollResults) {
+  constructor(questions, message, pollResults) {
     this._pollResults = pollResults;
     this._questions = questions;
     this._channel = message.channel;
-    this._showPollHandle = showPoll;
-    this._endPollHandle = endPoll;
     this._userVotes = {};
   }
 
@@ -32,11 +30,11 @@ class Poll {
     return this._userVotes;
   }
 
-  set userVotes(key, value) {
+  set userVotes({key, value}) {
     this._userVotes[key] = value;
   }
 
-  set pollResults(index, value) {
+  set pollResults({index, value}) {
     this._pollResults[index] = value;
   }
 
@@ -44,8 +42,14 @@ class Poll {
     this._endPollHandle = endPollHandle;
   }
 
+  set showPollHandle(showPollHandle) {
+    this._showPollHandle = showPollHandle;
+  }
+
   clearPoll() {
     clearInterval(this._showPollHandle);
     clearTimeout(this._endPollHandle);
   }
 }
+
+module.exports = Poll;
