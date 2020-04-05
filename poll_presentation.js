@@ -21,23 +21,22 @@ class PollPresenter {
     }
 
     poll.channel.send("Final Results:\n");
-    printPollResults(poll)
+    this.printPollResults(poll)
     poll.channel.send("Winner: " + winner
       + " with a score of " + score + "\n"
     );
   }
 
   printVoteMessage(poll, user, choice) {
-    message.channel.send(user + " voted for "
+    poll.channel.send(user + " voted for "
       + poll.questions[choice-1]);
-    printPollResults(poll);
+    this.printPollResults(poll);
   }
 
   printChangedVoteMessage(poll, user, choice) {
-    message.channel.send(message.author.username
-      + " changed their vote to " + poll.questions[choice-1]
-    );
-    printPollResults(poll);
+    poll.channel.send(user + " changed their vote to "
+    + poll.questions[choice-1]);
+    this.printPollResults(poll);
   }
 
   printStartPollMessage(poll) {
