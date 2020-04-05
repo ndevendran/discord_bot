@@ -1,4 +1,5 @@
 const Poll = require('./poll.js');
+const PollPresenter = require('./poll_presentation');
 
 class PollController {
   printPollResults(poll) {
@@ -78,18 +79,18 @@ class PollController {
     if(poll.userVotes[message.author.username] == null){
       poll.pollResults[(choice-1)]++;
       poll.userVotes[message.author.username] = choice;
-      message.channel.send(message.author.username + " voted for "
-        + poll.questions[choice-1]);
-      this.printPollResults(poll);
+      // message.channel.send(message.author.username + " voted for "
+      //   + poll.questions[choice-1]);
+      // this.printPollResults(poll);
     } else {
       const previousChoice = poll.userVotes[message.author.username];
       poll.pollResults[(previousChoice-1)]--;
       poll.pollResults[(choice-1)]++;
       poll.userVotes[message.author.username] = choice;
-      message.channel.send(message.author.username
-        + " changed their vote to " + poll.questions[choice-1]
-      );
-      this.printPollResults(poll);
+      // message.channel.send(message.author.username
+      //   + " changed their vote to " + poll.questions[choice-1]
+      // );
+      // this.printPollResults(poll);
     }
   }
 }
