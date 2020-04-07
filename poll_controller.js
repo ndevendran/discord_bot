@@ -4,6 +4,10 @@ const PollPresenter = require('./poll_presentation');
 const pollPresenter = new PollPresenter();
 
 class PollController {
+  printPollResults(poll) {
+    pollPresenter.printPollResults(poll);
+  }
+  
   makePoll(questions, message) {
     if(questions == null || questions.length < 2) {
       message.channel.send("Usage !poll question1 question2...question(n)");

@@ -10,6 +10,7 @@
   "author": "Niroshan Devendran <niroshan.devendran.80@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.0.2"
+    "discord.js": "^12.0.2",
+    "enmap": "^5.2.4"
   }
 }
