@@ -4,6 +4,7 @@ class Poll {
     this._questions = questions;
     this._channel = message.channel;
     this._userVotes = {};
+    this._author = message.author;
   }
 
   get pollResults() {
@@ -28,6 +29,10 @@ class Poll {
 
   get userVotes() {
     return this._userVotes;
+  }
+
+  get author() {
+    return this._author;
   }
 
   set userVotes({key, value}) {
